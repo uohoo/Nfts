@@ -52,9 +52,12 @@ async function executa() {
             }
             att.items.push(it);
         }
-        if (tot.toFixed(2) != 100) {
-            console.log("ERROR SUM LAYER " + a + " " + tot);
+        if (tot.toFixed(2) < 100) {
+            let none_freq = 100 - tot;
+            console.log("Adding NONE item for layer " + a + " (" + none_freq + "%)");
+            att.items.push({name: 'None', freq: none_freq, cnt: 0});
         }
+        if (tot.toFixed(2) > 100) console.log("ALERT!! Items freq for layer " + a + " bigger than 100, some items may be omitted!");
         attributes.push(att);
     }
     // RANDOM NUMBERS
