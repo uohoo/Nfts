@@ -2,10 +2,10 @@
 const all_layers = true;
 
 // All equiprobable
-const test = false;
+const test = true;
 
 // Total nft
-const total = 200;
+const total = 5000;
 
 // Nft size
 const format = {
@@ -14,13 +14,13 @@ const format = {
 };
 
 // Name for the nft title (base_name #136)
-const base_name = "";
+const base_name = "#US";
 
 // Template for the metadata, 0.png must be left alone
 const metadata = {
     "name": "",
-    "symbol": "",
-    "description": "",
+    "symbol": "#US",
+    "description": "#US has arrived to have fun on TERRA. Start playing with them!",
     "seller_fee_basis_points": 500,
     "external_url": "",
     "edition": "Original 2021",
@@ -28,22 +28,7 @@ const metadata = {
     "properties": {
       "category": "image",
       "creators": [
-        {
-          "address": "",
-          "share": 50
-        },
-        {
-          "address": "",
-          "share": 30
-        },
-        {
-          "address": "",
-          "share": 15
-        },
-        {
-          "address": "",
-          "share": 5
-        }
+
       ],
       "files": [
         {

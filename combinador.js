@@ -3,9 +3,6 @@ const { createCanvas, loadImage } = require("canvas");
 const console = require("console");
 const { attributes, total, format, metadata, base_name, all_layers, test } = require("./config.js");
 const { exit } = require("process");
-
-const canvas = createCanvas(format.width, format.height);
-const ctx = canvas.getContext("2d");
   
 const buildDir = `${process.cwd()}/build`;
 const layersDir = `${process.cwd()}/layers`;
@@ -54,7 +51,7 @@ async function executa() {
         }
         if (tot.toFixed(2) < 100) {
             let none_freq = 100 - tot;
-            console.log("Adding NONE item for layer " + a + " (" + none_freq + "%)");
+            console.log("Adding NONE item for layer " + att.name + " (" + none_freq + "%)");
             att.items.push({name: 'None', freq: none_freq, cnt: 0});
         }
         if (tot.toFixed(2) > 100) console.log("ALERT!! Items freq for layer " + a + " bigger than 100, some items may be omitted!");
@@ -67,6 +64,8 @@ async function executa() {
     // GENERATE
     var used = new Set();
     for (let n = 0; n < total; n++) {
+        const canvas = createCanvas(format.width, format.height);
+        const ctx = canvas.getContext("2d");
         if (n % 100 == 0) console.log("Creating edition " + n + " - " + repeat);
         var md = metadata;
         md.attributes = [];
