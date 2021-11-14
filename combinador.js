@@ -1,11 +1,12 @@
 const fs = require("fs");
 const { createCanvas, loadImage } = require("canvas");
 const console = require("console");
-const { attributes, total, format, metadata, base_name, all_layers, test } = require("./config.js");
-const { exit } = require("process");
-  
-const buildDir = `${process.cwd()}/build`;
-const layersDir = `${process.cwd()}/layers`;
+
+const nom = 'US';
+
+const buildDir = `${process.cwd()}/${nom}/build`;
+const layersDir = `${process.cwd()}/${nom}/layers`;
+const { total, format, metadata, base_name, all_layers, test } = require(`./${nom}/config.js`);
 
 function decodeNumbers(s) {
     res = [];
@@ -27,6 +28,7 @@ function isNotNone(s) {
 
 
 async function executa() {
+    console.log('COLLECTION ' + nom);
     var attributes = [];
     var repeat = 0;
     const dirs = await fs.promises.readdir( layersDir );
@@ -42,6 +44,7 @@ async function executa() {
             tot += it.freq;
             if (isNotNone(it.name)) {
                 const im = await loadImage(`${layersDir}/${dirs[a]}/${files[i]}`);
+                if ((im.width % format.width != 0) || (im.height % format.height != 0)) console.log('Dimensions not a divisor of original dimensions!')
                 const cv = createCanvas(format.width, format.height);
                 const ct = cv.getContext("2d");
                 ct.drawImage(im, 0, 0, format.width, format.height);
@@ -62,6 +65,7 @@ async function executa() {
     for (let nn = 0; nn < 10000; nn++) { tt += Math.random(); }
     console.log(tt);
     // GENERATE
+    fs.mkdirSync(buildDir, {recursive: true});
     var used = new Set();
     for (let n = 0; n < total; n++) {
         const canvas = createCanvas(format.width, format.height);
