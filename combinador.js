@@ -2,7 +2,7 @@ const fs = require("fs");
 const { createCanvas, loadImage } = require("canvas");
 const console = require("console");
 
-const nom = 'US';
+const nom = 'US'; // EDIT THIS!
 
 const buildDir = `${process.cwd()}/${nom}/build`;
 const layersDir = `${process.cwd()}/${nom}/layers`;
