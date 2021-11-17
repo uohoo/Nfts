@@ -2,7 +2,7 @@ const fs = require("fs");
 const { createCanvas, loadImage } = require("canvas");
 const console = require("console");
 
-const nom = 'US'; // EDIT THIS!
+const nom = 'Girafes'; // EDIT THIS!
 
 const buildDir = `${process.cwd()}/${nom}/build`;
 const layersDir = `${process.cwd()}/${nom}/layers`;
@@ -10,15 +10,24 @@ const { total, format, metadata, base_name, all_layers, test } = require(`./${no
 
 function decodeNumbers(s) {
     res = [];
-    for (let c = 0; c < s.length; c++) { res.push(parseInt(s[c])); }
+    for (let c = 0; c < s.length; c++) { 
+        const n = parseInt(s[c]);
+        if (isNaN(n)) console.log('ERROR FATAL');
+        res.push(); 
+    }
     return res;
 }
 
 function decodeFilename(s) {
     let aux = s.replace('.png','').split('_');
     let data = {name: aux[1], freq: parseFloat(aux[0]) / 10, cnt: 0};
-    if ((aux.length > 2) && (aux[2] != undefined)) { data.fit = decodeNumbers(aux[2]); }
-    if ((aux.length > 3) && (aux[3] != undefined)) { data.val = decodeNumbers(aux[3]); }
+    if ((aux.length > 2) && (aux[2] != undefined)) {
+        data.fit = decodeNumbers(aux[2]); 
+    }
+    if (aux.length > 3) { 
+        // NO CHECK UNDEFINED PERQUE FUNCIONI AMB CAP CAPA
+        data.val = decodeNumbers(aux[3]); 
+    } 
     return data;
 }
 
@@ -120,8 +129,9 @@ async function executa() {
     }
     // PRINT STATS
     for (let a = 0; a < attributes.length; a++) {
+        // TODO: FALTA NORMALITZAR O TREURE ELS CNT DE MES DE LES REPETIDES
         for (let i = 0; i < attributes[a].items.length; i++) {
-            console.log(attributes[a].name, attributes[a].items[i].name, attributes[a].items[i].freq, attributes[a].items[i].cnt)
+            console.log(attributes[a].name, attributes[a].items[i].name, attributes[a].items[i].freq.toFixed(1), attributes[a].items[i].cnt.toFixed(1))
         }
     }
 }
