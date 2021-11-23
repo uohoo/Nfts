@@ -2,7 +2,7 @@ const fs = require("fs");
 const { createCanvas, loadImage } = require("canvas");
 const console = require("console");
 
-const nom = 'Girafes'; // EDIT THIS!
+const nom = 'Giraffes'; // EDIT THIS!
 
 const buildDir = `${process.cwd()}/${nom}/build`;
 const layersDir = `${process.cwd()}/${nom}/layers`;
@@ -79,11 +79,11 @@ async function executa() {
     for (let n = 0; n < total; n++) {
         const canvas = createCanvas(format.width, format.height);
         const ctx = canvas.getContext("2d");
-        if (n % 100 == 0) console.log("Creating edition " + n + " - " + repeat);
         var md = metadata;
         md.attributes = [];
         var valid_layers = new Set([0,1,2,3,4,5,6,7,8,9]);
         var fit = -1;
+        let idx_attr = [];
         for (let a = 0; a < attributes.length; a++) {
             if (valid_layers.has(a)) {
                 var i;
@@ -98,7 +98,7 @@ async function executa() {
                 }
                 while ((fit != -1) && ("fit" in attributes[a].items[i]) && (!(new Set(attributes[a].items[i].fit)).has(fit)));
                 // COUNT
-                attributes[a].items[i].cnt += (100.0 / total)
+                idx_attr.push(i);
                 // GET LAYER RESTRICTION IF EXISTS
                 if ("val" in attributes[a].items[i]) { valid_layers = new Set(attributes[a].items[i].val); }
                 // GET ITEM RESTRICTION IF EXISTS AND NOT ALREADY ENFORCED
@@ -109,7 +109,9 @@ async function executa() {
                 md.attributes.push({ "trait_type": attributes[a].name, "value": attributes[a].items[i].name });
             } else {
                 // PUSH ITEM METADATA - NO LAYER
-                if (all_layers) { md.attributes.push({ "trait_type": attributes[a].name, "value": "NONE" }); }
+                if (all_layers) { md.attributes.push({ "trait_type": attributes[a].name, "value": "None" }); }
+                // COUNT
+                idx_attr.push(i);
             }
         }
         // SAVE IMAGE
@@ -120,12 +122,15 @@ async function executa() {
         md.image = `${n}.png`;
         fs.writeFileSync(`${buildDir}/${n}.json`, JSON.stringify(md, null, 2));
         // NO REPEATS
-        const id = JSON.stringify(md.attributes);
+        const id = JSON.stringify(idx_attr);
         if (used.has(id)) {
             n--;
             repeat++;
+        } else {
+            used.add(id);
+            for (let a = 0; a < attributes.length; a++) attributes[a].items[idx_attr[a]].cnt += 100 / total;
+            if (n % 100 == 0) console.log("Created edition " + n + " - " + repeat);
         }
-        used.add(id);
     }
     // PRINT STATS
     for (let a = 0; a < attributes.length; a++) {
