@@ -2,18 +2,18 @@ const fs = require("fs");
 const { createCanvas, loadImage } = require("canvas");
 const console = require("console");
 
-const nom = 'Giraffes'; // EDIT THIS!
+const nom = 'Bolets'; // EDIT THIS!
 
 const buildDir = `${process.cwd()}/${nom}/build`;
 const layersDir = `${process.cwd()}/${nom}/layers`;
 const { total, format, metadata, base_name, all_layers, test } = require(`./${nom}/config.js`);
 
 function decodeNumbers(s) {
-    res = [];
+    let res = [];
     for (let c = 0; c < s.length; c++) { 
         const n = parseInt(s[c]);
-        if (isNaN(n)) console.log('ERROR FATAL');
-        res.push(); 
+        if (isNaN(n)) throw Error('NON-PARSEABLE NUM!!');
+        res.push(n); 
     }
     return res;
 }
@@ -63,11 +63,11 @@ async function executa() {
         }
         if (tot.toFixed(2) < 100) {
             let none_freq = 100 - tot;
-            console.log("Adding NONE item for layer " + att.name + " (" + none_freq + "%)");
+            console.log("Adding None item for layer " + att.name + " (" + none_freq + "%)");
             att.items.push({name: 'None', freq: none_freq, cnt: 0});
         }
-        if (tot.toFixed(2) > 100) console.log("ALERT!! Items freq for layer " + a + " bigger than 100, some items may be omitted!");
         attributes.push(att);
+        if (tot.toFixed(2) > 100) console.log("ALERT!! Items freq for layer " + attributes[a].name + " bigger than 100, some items may be omitted!");
     }
     // RANDOM NUMBERS
     let tt = 0;
@@ -149,11 +149,3 @@ async function executa() {
         console.log(e);
     }
 })();
-
-
-// TODO -> V2
-// Output primera majuscula la resta minuscules
-//  0_Background
-//      50_BLUE.png
-//      50_RED.png
-// build_nomcoleccio i layers_nomcoleccio
