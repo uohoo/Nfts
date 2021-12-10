@@ -2,13 +2,14 @@ const fs = require("fs");
 const { createCanvas, loadImage } = require("canvas");
 const console = require("console");
 
-const nom = 'Bolets'; // EDIT THIS!
+const nom = 'Dodos'; // EDIT THIS!
 
 const buildDir = `${process.cwd()}/${nom}/build`;
 const layersDir = `${process.cwd()}/${nom}/layers`;
 const { total, format, metadata, base_name, all_layers, test } = require(`./${nom}/config.js`);
 
 function decodeNumbers(s) {
+    s = s.replace(' ', '');
     let res = [];
     for (let c = 0; c < s.length; c++) { 
         const n = parseInt(s[c]);
