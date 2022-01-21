@@ -12,6 +12,21 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}/combinador.js"
+        },
+        {
+            "name": "irenedaold",
+            "request": "launch",
+            "runtimeArgs": [
+                "run",
+                "ts-node",
+                "genera.ts"
+            ],
+            "runtimeExecutable": "npm",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "pwa-node",
+            "outputCapture": "std"
         }
     ]
 }

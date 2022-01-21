@@ -1,12 +1,16 @@
 const fs = require("fs");
 const { createCanvas, loadImage } = require("canvas");
-const console = require("console");
+const crypto = require('crypto');
 
-const nom = 'Giraffes'; // EDIT THIS!
+// EDIT THIS!
+const name = 'Zorag';
+const startHashLayer = 1;
+const solana = true;
+// END EDIT
 
-const buildDir = `${process.cwd()}/${nom}/build`;
-const layersDir = `${process.cwd()}/${nom}/layers`;
-const { total, format, metadata, base_name, all_layers, test } = require(`./${nom}/config.js`);
+const buildDir = `${process.cwd()}/${name}/build`;
+const layersDir = `${process.cwd()}/${name}/layers`;
+const { total, format, metadata, base_name, all_layers, test } = require(`./${name}/config.js`);
 
 function decodeNumbers(s) {
     s = s.replace(' ', '');
@@ -26,7 +30,7 @@ function decodeFilename(s) {
         data.fit = decodeNumbers(aux[2]); 
     }
     if (aux.length > 3) { 
-        // NO CHECK UNDEFINED PERQUE FUNCIONI AMB CAP CAPA
+        // NO CHECK UNDEFINED SO IT WORKS WITH NO LAYERS
         data.val = decodeNumbers(aux[3]); 
     } 
     return data;
@@ -36,9 +40,15 @@ function isNotNone(s) {
     return !(['none', 'None', 'NONE'].includes(s));
 }
 
+function generateHash(pass) {
+    return crypto.createHmac('sha256', '$ome$alt€')
+      .update(pass)
+      .digest('hex');
+}
 
-async function executa() {
-    console.log('COLLECTION ' + nom);
+
+async function execute() {
+    console.log('COLLECTION ' + name);
     var attributes = [];
     var repeat = 0;
     const dirs = await fs.promises.readdir( layersDir );
@@ -115,19 +125,32 @@ async function executa() {
                 idx_attr.push(i);
             }
         }
-        // SAVE IMAGE
-        fs.writeFileSync(`${buildDir}/${n}.png`, canvas.toBuffer("image/png"));
-        // EDIT AND SAVE METADATA
-        md.name = `${base_name} #${n}`;
-        md.properties.files[0].uri = `${n}.png`;
-        md.image = `${n}.png`;
-        fs.writeFileSync(`${buildDir}/${n}.json`, JSON.stringify(md, null, 2));
+        // EXTRA FOR NSW
+        let badnsw = false;
+        if ((md.attributes[6].value.includes('Headphones')) && ((md.attributes[2].value.includes('Suit')) || (md.attributes[2].value.includes('Sweater')))) badnsw = true;
         // NO REPEATS
-        const id = JSON.stringify(idx_attr);
-        if (used.has(id)) {
+        const id = JSON.stringify(idx_attr.slice(startHashLayer));
+        if ((used.has(id)) || badnsw) {
+            // REPEATED
             n--;
             repeat++;
         } else {
+            // SAVE IMAGE
+            fs.writeFileSync(`${buildDir}/${n}.png`, canvas.toBuffer("image/png"));
+            // EDIT AND SAVE METADATA
+            if (solana) {
+                md.name = `${base_name} #${n}`;
+                md.properties.files[0].uri = `${n}.png`;
+                md.image = `${n}.png`;                
+            } else {
+                md.title = `${base_name} #${n}`;
+                // md.media = `${n}.png`;
+                // md.edition = n;
+                // md.dna = generateHash(id).slice(0,40);
+                // md.date = Date.now();
+            }
+            fs.writeFileSync(`${buildDir}/${n}.json`, JSON.stringify(md, null, 2));
+            // NOT REPEATED
             used.add(id);
             for (let a = 0; a < attributes.length; a++) attributes[a].items[idx_attr[a]].cnt += 100 / total;
             if (n % 100 == 0) console.log("Created edition " + n + " - " + repeat);
@@ -135,16 +158,15 @@ async function executa() {
     }
     // PRINT STATS
     for (let a = 0; a < attributes.length; a++) {
-        // TODO: FALTA NORMALITZAR O TREURE ELS CNT DE MES DE LES REPETIDES
         for (let i = 0; i < attributes[a].items.length; i++) {
-            console.log(attributes[a].name, attributes[a].items[i].name, attributes[a].items[i].freq.toFixed(1), attributes[a].items[i].cnt.toFixed(1))
+            console.log(attributes[a].name, attributes[a].items[i].name, attributes[a].items[i].freq.toFixed(1), attributes[a].items[i].cnt.toFixed(1));
         }
     }
 }
 
 (async () => {
     try {
-        await executa();
+        await execute();
         console.log('CREATED ', total, ' NFTs');
     } catch (e) {
         console.log(e);

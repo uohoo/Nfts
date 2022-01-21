@@ -1,5 +1,14 @@
 {
   "dependencies": {
-    "canvas": "^2.8.0"
-  }
+    "canvas": "^2.8.0",
+    "fs": "^0.0.1-security",
+    "ts-node": "^10.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.10"
+  },
+  "scripts": {
+    "build": "npm run clean && npx tsc",
+    "ts-node": "node --loader ts-node/esm"
+}
 }
