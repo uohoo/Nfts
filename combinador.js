@@ -3,14 +3,12 @@ const { createCanvas, loadImage } = require("canvas");
 const crypto = require('crypto');
 
 // EDIT THIS!
-const name = 'Zorag';
-const startHashLayer = 1;
-const solana = true;
+const name = 'Bolets';
 // END EDIT
 
 const buildDir = `${process.cwd()}/${name}/build`;
 const layersDir = `${process.cwd()}/${name}/layers`;
-const { total, format, metadata, base_name, all_layers, test } = require(`./${name}/config.js`);
+const { total, format, metadata, base_name, all_layers, test, solana, startHashLayer } = require(`./${name}/config.js`);
 
 function decodeNumbers(s) {
     s = s.replace(' ', '');
@@ -64,7 +62,7 @@ async function execute() {
             tot += it.freq;
             if (isNotNone(it.name)) {
                 const im = await loadImage(`${layersDir}/${dirs[a]}/${files[i]}`);
-                if ((im.width % format.width != 0) || (im.height % format.height != 0)) console.log('Dimensions not a divisor of original dimensions!')
+                //if ((im.width % format.width != 0) || (im.height % format.height != 0)) console.log('Dimensions not a divisor of original dimensions!')
                 const cv = createCanvas(format.width, format.height);
                 const ct = cv.getContext("2d");
                 ct.drawImage(im, 0, 0, format.width, format.height);
