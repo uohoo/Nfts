@@ -75,6 +75,7 @@ async function execute() {
             }
             att.items.push(it);
         }
+        // CHANGES NONE ALL LAYERS
         // if (tot.toFixed(2) < 100) {
         let none_freq = Math.max(100 - tot, 0);
         console.log("Adding None item for layer " + att.name + " (" + none_freq + "%)");
