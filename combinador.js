@@ -75,12 +75,11 @@ async function execute() {
             }
             att.items.push(it);
         }
-        // CHANGES NONE ALL LAYERS
-        // if (tot.toFixed(2) < 100) {
-        let none_freq = Math.max(100 - tot, 0);
-        console.log("Adding None item for layer " + att.name + " (" + none_freq + "%)");
-        att.items.push({name: 'None', freq: none_freq, cnt: 0});
-        // }
+        if (tot.toFixed(2) < 100) {
+            let none_freq = 100 - tot;
+            console.log("Adding None item for layer " + att.name + " (" + none_freq + "%)");
+            att.items.push({name: 'None', freq: none_freq, cnt: 0});
+        }
         attributes.push(att);
         if (tot.toFixed(2) > 100) console.log("ALERT!! Items freq for layer " + attributes[a].name + " bigger than 100, some items may be omitted!");
     }
@@ -156,7 +155,10 @@ async function execute() {
             fs.writeFileSync(`${buildDir}/${n}.json`, JSON.stringify(md, null, 2));
             // NOT REPEATED
             used.add(id);
-            for (let a = 0; a < attributes.length; a++) attributes[a].items[idx_attr[a]].cnt += 100 / total;
+            try {
+                for (let a = 0; a < attributes.length; a++) attributes[a].items[idx_attr[a]].cnt += 100 / total;
+            } catch (error) {
+            }
             if (n % 100 == 0) console.log("Created edition " + n + " - " + repeat);
         }
     }
