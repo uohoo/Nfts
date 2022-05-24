@@ -3,7 +3,7 @@ const { createCanvas, loadImage } = require("canvas");
 const crypto = require('crypto');
 
 // EDIT THIS!
-const name = 'Bolets';
+const name = 'Chill';
 // END EDIT
 
 const buildDir = `${process.cwd()}/${name}/build`;
@@ -22,16 +22,21 @@ function decodeNumbers(s) {
 }
 
 function decodeFilename(s) {
-    let aux = s.replace('.png','').split('_');
-    let data = {name: aux[1], freq: parseFloat(aux[0]) / 10, cnt: 0};
-    if ((aux.length > 2) && (aux[2] != undefined)) {
-        data.fit = decodeNumbers(aux[2]); 
+    try {
+        let aux = s.replace('.png','').split('_');
+        let data = {name: aux[1], freq: parseFloat(aux[0]) / 10, cnt: 0};
+        if ((aux.length > 2) && (aux[2] != undefined)) {
+            data.fit = decodeNumbers(aux[2]); 
+        }
+        if (aux.length > 3) { 
+            // NO CHECK UNDEFINED SO IT WORKS WITH NO LAYERS
+            data.val = decodeNumbers(aux[3]); 
+        } 
+        return data;        
+    } catch (error) {
+        console.log(`Bad filename: ${s}`)
+        return {name: 'NA', freq: 1, cnt: 0}
     }
-    if (aux.length > 3) { 
-        // NO CHECK UNDEFINED SO IT WORKS WITH NO LAYERS
-        data.val = decodeNumbers(aux[3]); 
-    } 
-    return data;
 }
 
 function isNotNone(s) {
@@ -70,11 +75,11 @@ async function execute() {
             }
             att.items.push(it);
         }
-        if (tot.toFixed(2) < 100) {
-            let none_freq = 100 - tot;
-            console.log("Adding None item for layer " + att.name + " (" + none_freq + "%)");
-            att.items.push({name: 'None', freq: none_freq, cnt: 0});
-        }
+        // if (tot.toFixed(2) < 100) {
+        let none_freq = Math.max(100 - tot, 0);
+        console.log("Adding None item for layer " + att.name + " (" + none_freq + "%)");
+        att.items.push({name: 'None', freq: none_freq, cnt: 0});
+        // }
         attributes.push(att);
         if (tot.toFixed(2) > 100) console.log("ALERT!! Items freq for layer " + attributes[a].name + " bigger than 100, some items may be omitted!");
     }
@@ -90,7 +95,7 @@ async function execute() {
         const ctx = canvas.getContext("2d");
         var md = metadata;
         md.attributes = [];
-        var valid_layers = new Set([0,1,2,3,4,5,6,7,8,9]);
+        var valid_layers = new Set([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]);
         var fit = -1;
         let idx_attr = [];
         for (let a = 0; a < attributes.length; a++) {
